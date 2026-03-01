@@ -74,34 +74,43 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
         setError(null);
 
         try {
-            // 1. Save to Firestore
-            await addDoc(collection(db, 'contacts'), {
-                ...formData,
-                selectedServices,
-                createdAt: serverTimestamp(),
+            // Add a timeout so it doesn't hang infinitely if Firebase/EmailJS network requests fail
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('Request timed out. Check your environment variables or network.')), 10000);
             });
 
-            // 2. Send Confirmation Email via EmailJS
-            // Replace these with your actual EmailJS credentials
-            const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
-            const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID';
-            const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY';
+            const submitTask = async () => {
+                // 1. Save to Firestore
+                await addDoc(collection(db, 'contacts'), {
+                    ...formData,
+                    selectedServices,
+                    createdAt: serverTimestamp(),
+                });
 
-            if (serviceId !== 'YOUR_SERVICE_ID') {
-                await emailjs.send(
-                    serviceId,
-                    templateId,
-                    {
-                        user_name: formData.businessName,
-                        user_email: formData.email,
-                        user_phone: formData.phone,
-                        selected_services: selectedServices.join(', ') || 'No specific services',
-                    },
-                    publicKey
-                );
-            } else {
-                console.warn("EmailJS credentials not set. Skipping email dispatch.");
-            }
+                // 2. Send Confirmation Email via EmailJS
+                const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
+                const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID';
+                const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY';
+
+                if (serviceId !== 'YOUR_SERVICE_ID' && serviceId && serviceId.trim() !== '') {
+                    await emailjs.send(
+                        serviceId,
+                        templateId,
+                        {
+                            user_name: formData.businessName,
+                            user_email: formData.email,
+                            user_phone: formData.phone,
+                            selected_services: selectedServices.join(', ') || 'No specific services',
+                        },
+                        publicKey
+                    );
+                } else {
+                    console.warn("EmailJS credentials not set. Skipping email dispatch.");
+                }
+            };
+
+            // Run both, if submitTask takes longer than 10s, it throws the timeout error
+            await Promise.race([submitTask(), timeoutPromise]);
 
             setIsSuccess(true);
             setTimeout(() => {
