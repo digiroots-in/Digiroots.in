@@ -47,4 +47,18 @@
     white-space: nowrap;
     direction: ltr;
   }
+
+  /* Remove default browser markers for details/summary (Chrome, Safari, Firefox) */
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary::marker {
+    display: none;
+    content: "";
+  }
+
+  summary {
+    list-style: none;
+  }
 }
