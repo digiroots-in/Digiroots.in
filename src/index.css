@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  .sticker-highlight {
+    @apply inline-block px-4;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    transform: rotate(-2deg);
+    border-radius: 0.5rem;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .sticker-highlight:nth-child(even) {
+    transform: rotate(2deg);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .success-grid-item {
+    @apply border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/5 p-8 rounded-[2rem] hover:bg-black/[0.08] dark:hover:bg-white/[0.08] transition-all duration-300;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-family: 'Material Symbols Outlined';
+    font-style: normal;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+  }
+}
