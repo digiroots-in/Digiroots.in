@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { supabase } from '../lib/supabase';
 import emailjs from '@emailjs/browser';
-import { db } from '../lib/firebase';
 
 
 interface ContactModalProps {
@@ -80,12 +79,19 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
             });
 
             const submitTask = async () => {
-                // 1. Save to Firestore
-                await addDoc(collection(db, 'contacts'), {
-                    ...formData,
-                    selectedServices,
-                    createdAt: serverTimestamp(),
-                });
+                // 1. Save to Supabase
+                const { error: supabaseError } = await supabase
+                    .from('contacts')
+                    .insert([
+                        {
+                            business_name: formData.businessName,
+                            email: formData.email,
+                            phone: formData.phone,
+                            selected_services: selectedServices,
+                        }
+                    ]);
+
+                if (supabaseError) throw supabaseError;
 
                 // 2. Send Confirmation Email via EmailJS
                 const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
