@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, useScroll, useTransform, useSpring, useMotionValue } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface HeroProps {
     readonly className?: string;
