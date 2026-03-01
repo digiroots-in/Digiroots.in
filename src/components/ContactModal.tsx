@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import emailjs from '@emailjs/browser';
+import { db } from '../lib/firebase';
+
 
 interface ContactModalProps {
     readonly isOpen: boolean;
@@ -23,6 +27,9 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
         email: '',
         phone: '',
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     // Reset step on open
     useEffect(() => {
@@ -61,10 +68,58 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
         setStep(2);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Lead Captured:', { ...formData, selectedServices });
-        onClose();
+        setIsSubmitting(true);
+        setError(null);
+
+        try {
+            // 1. Save to Firestore
+            await addDoc(collection(db, 'contacts'), {
+                ...formData,
+                selectedServices,
+                createdAt: serverTimestamp(),
+            });
+
+            // 2. Send Confirmation Email via EmailJS
+            // Replace these with your actual EmailJS credentials
+            const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
+            const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID';
+            const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'YOUR_PUBLIC_KEY';
+
+            if (serviceId !== 'YOUR_SERVICE_ID') {
+                await emailjs.send(
+                    serviceId,
+                    templateId,
+                    {
+                        user_name: formData.businessName,
+                        user_email: formData.email,
+                        user_phone: formData.phone,
+                        selected_services: selectedServices.join(', ') || 'No specific services',
+                    },
+                    publicKey
+                );
+            } else {
+                console.warn("EmailJS credentials not set. Skipping email dispatch.");
+            }
+
+            setIsSuccess(true);
+            setTimeout(() => {
+                onClose();
+                // Reset form after exit animation completes
+                setTimeout(() => {
+                    setStep(1);
+                    setFormData({ businessName: '', email: '', phone: '' });
+                    setSelectedServices([]);
+                    setIsSuccess(false);
+                }, 300);
+            }, 3000);
+        } catch (err: any) {
+            console.error('Error saving document or sending email:', err);
+            setError('Something went wrong. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -106,7 +161,25 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-6 sm:p-8 md:p-10">
                     <AnimatePresence mode="wait">
-                        {step === 1 ? (
+                        {isSuccess ? (
+                            <motion.div
+                                key="success"
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0.9, opacity: 0 }}
+                                className="flex flex-col items-center justify-center py-12 space-y-4 text-center"
+                            >
+                                <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mb-4">
+                                    <span className="material-symbols-outlined text-[40px] text-primary">check_circle</span>
+                                </div>
+                                <h3 className="text-2xl font-display font-extrabold text-slate-900 dark:text-white">
+                                    Request Received!
+                                </h3>
+                                <p className="text-slate-500 dark:text-slate-400 max-w-[280px]">
+                                    Thank you for reaching out. We will get back to you and send a confirmation email shortly.
+                                </p>
+                            </motion.div>
+                        ) : step === 1 ? (
                             <motion.div
                                 key="step1"
                                 initial={{ x: -20, opacity: 0 }}
@@ -224,18 +297,31 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
                                         <button
                                             type="button"
                                             onClick={() => setStep(1)}
-                                            className="flex-1 py-4 px-6 rounded-full font-bold text-slate-600 dark:text-slate-300 border-2 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-center"
+                                            disabled={isSubmitting}
+                                            className="flex-1 py-4 px-6 rounded-full font-bold text-slate-600 dark:text-slate-300 border-2 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-center disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
                                             Back
                                         </button>
                                         <button
                                             type="submit"
-                                            className="grow-[2] bg-primary hover:bg-lime-500 text-black font-bold py-4 px-6 rounded-full transition-all flex items-center justify-center gap-2 group shadow-xl hover:shadow-primary/20 active:scale-[0.98]"
+                                            disabled={isSubmitting}
+                                            className="grow-[2] bg-primary hover:bg-lime-500 disabled:bg-primary/50 text-black font-bold py-4 px-6 rounded-full transition-all flex items-center justify-center gap-2 group shadow-xl hover:shadow-primary/20 active:scale-[0.98] disabled:cursor-not-allowed"
                                         >
-                                            Book My Free Call
-                                            <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                            {isSubmitting ? (
+                                                <span className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                                            ) : (
+                                                <>
+                                                    Book My Free Call
+                                                    <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                                </>
+                                            )}
                                         </button>
                                     </div>
+                                    {error && (
+                                        <p className="text-red-500 text-sm text-center font-medium mt-2">
+                                            {error}
+                                        </p>
+                                    )}
                                 </form>
                             </motion.div>
                         )}

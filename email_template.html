@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Import Google Fonts: Display font Outift, and Body font Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <title>We Received Your Request - DigiRoots</title>
+    <style>
+        /* Responsive utilities */
+        @media screen and (max-width: 600px) {
+            .mobile-padding {
+                padding: 32px 20px 0px 20px !important;
+            }
+
+            .mobile-content-padding {
+                padding: 24px 20px 32px 20px !important;
+            }
+
+            .mobile-footer-padding {
+                padding: 24px 20px !important;
+            }
+
+            .mobile-center-text {
+                text-align: center !important;
+            }
+
+            .mobile-stack {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            .mobile-title {
+                font-size: 28px !important;
+            }
+
+            .mobile-cta {
+                margin-top: 16px !important;
+                text-align: center !important;
+            }
+        }
+    </style>
+</head>
+
+<body style="margin: 0; padding: 0; background-color: #061a06; -webkit-font-smoothing: antialiased;">
+
+    <!-- Wrapper for Email Clients -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0"
+        style="background-color: #061a06; min-height: 100vh;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+
+                <!-- Main Email Container -->
+                <table class="mobile-stack" width="100%"
+                    style="max-width: 600px; background-color: #0a260a; border-radius: 32px; border: 1px solid rgba(255, 255, 255, 0.1); width: 100%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);"
+                    cellpadding="0" cellspacing="0" border="0">
+
+                    <!-- Header (Logo) -->
+                    <tr>
+                        <td class="mobile-padding" style="padding: 40px 40px 0px 40px;">
+                            <a href="https://digiroots.agency" target="_blank"
+                                style="text-decoration: none; display: inline-block;">
+                                <!-- Wordmark fallback if image is blocked. Uses Outfit font with Lime period -->
+                                <span
+                                    style="font-family: 'Outfit', -apple-system, sans-serif; font-size: 28px; font-weight: 900; color: #ffffff; letter-spacing: -1px; display: flex; align-items: baseline;">
+                                    digiroots<span style="color: #84cc16;">.</span>
+                                </span>
+                                <!-- Optional: Image version of the logo -->
+                                <!-- <img src="cid:logo.png" alt="digiroots." height="32" style="display: block; border: none; height: 32px;" /> -->
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- Body Content -->
+                    <tr>
+                        <td class="mobile-content-padding" style="padding: 32px 40px 40px 40px;">
+
+                            <!-- Greeting / Display Heading -->
+                            <h1 class="mobile-title"
+                                style="font-family: 'Outfit', -apple-system, sans-serif; font-size: 36px; font-weight: 800; color: #ffffff; margin: 0 0 24px 0; text-transform: uppercase; letter-spacing: -1px; line-height: 1.1;">
+                                Request<br>
+                                <span style="color: #84cc16;">Received.</span>
+                            </h1>
+
+                            <!-- Message -->
+                            <p
+                                style="font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; font-size: 16px; font-weight: 500; color: #f8fafc; opacity: 0.9; margin: 0 0 16px 0; line-height: 1.6;">
+                                Hi <strong>{{user_name}}</strong>,
+                            </p>
+
+                            <p
+                                style="font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; font-size: 16px; font-weight: 400; color: #cbd5e1; margin: 0 0 32px 0; line-height: 1.6;">
+                                Thank you for reaching out to us. We have received your consultation request, and our
+                                performance team is already looking into it. We'll do our best to process it and get
+                                back to you within 1-2 business days.
+                            </p>
+
+                            <!-- Data / Highlight Box -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                                style="background-color: rgba(255, 255, 255, 0.03); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                                <tr>
+                                    <td style="padding: 24px;">
+                                        <p
+                                            style="font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; font-size: 12px; font-weight: 700; color: #84cc16; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 8px 0;">
+                                            Services Requested
+                                        </p>
+                                        <p
+                                            style="font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; font-size: 15px; font-weight: 600; color: #ffffff; margin: 0; line-height: 1.5;">
+                                            {{selected_services}}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td class="mobile-footer-padding"
+                            style="padding: 32px 40px; border-top: 1px solid rgba(255, 255, 255, 0.05);">
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                                <tr>
+                                    <!-- Sign Off -->
+                                    <td class="mobile-stack mobile-center-text" align="left" style="width: 50%;">
+                                        <p
+                                            style="font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; font-size: 14px; font-weight: 400; color: #94a3b8; margin: 0; line-height: 1.5;">
+                                            Best regards,<br>
+                                            <strong style="color: #ffffff; font-weight: 600;">The DigiRoots
+                                                Team</strong>
+                                        </p>
+                                    </td>
+                                    <!-- CTA / Social -->
+                                    <td class="mobile-stack mobile-cta" align="right" style="width: 50%;">
+                                        <a href="https://digiroots.agency" target="_blank"
+                                            style="display: inline-block; padding: 10px 24px; background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: #ffffff; font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; font-size: 13px; font-weight: 700; text-decoration: none; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            View Website
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                </table>
+
+                <!-- Small Print -->
+                <p
+                    style="font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; font-size: 12px; color: #64748b; margin: 24px 0 0 0; text-align: center;">
+                    © 2026 DigiRoots Agency. All rights reserved.<br>
+                    If you didn't request this, you can safely ignore this email.
+                </p>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>
