@@ -4,11 +4,18 @@ import { useDarkMode } from '../hooks/useDarkMode';
 
 interface NavbarProps {
     readonly className?: string;
+    readonly onOpenContact?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
+export const Navbar: React.FC<NavbarProps> = ({ className = '', onOpenContact }) => {
     const { isDark, toggle } = useDarkMode();
     const [menuOpen, setMenuOpen] = useState(false);
+
+    const handleContactClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        onOpenContact?.();
+        setMenuOpen(false);
+    };
 
     return (
         <nav
@@ -50,12 +57,12 @@ export const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
                     </button>
 
                     {/* Desktop CTA */}
-                    <a
-                        href="#"
-                        className="hidden sm:block bg-primary hover:bg-lime-500 text-black font-bold px-4 lg:px-6 py-2 sm:py-2.5 rounded-full transition-all hover:scale-105 text-sm lg:text-base"
+                    <button
+                        onClick={handleContactClick}
+                        className="hidden sm:block bg-primary hover:bg-lime-500 text-black font-bold px-4 lg:px-6 py-2 sm:py-2.5 rounded-full transition-all hover:scale-105 text-sm lg:text-base cursor-pointer"
                     >
                         Contact Us
-                    </a>
+                    </button>
 
                     {/* Hamburger — mobile only */}
                     <button
@@ -84,12 +91,12 @@ export const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
                                 {link.label}
                             </a>
                         ))}
-                        <a
-                            href="#"
-                            className="mt-2 bg-primary hover:bg-lime-500 text-black font-bold px-6 py-3 rounded-full transition-all text-center"
+                        <button
+                            onClick={handleContactClick}
+                            className="mt-2 bg-primary hover:bg-lime-500 text-black font-bold px-6 py-3 rounded-full transition-all text-center cursor-pointer"
                         >
                             Contact Us
-                        </a>
+                        </button>
                     </div>
                 </div>
             )}

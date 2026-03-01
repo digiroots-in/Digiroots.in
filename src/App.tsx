@@ -8,24 +8,35 @@ import Pricing from './components/Pricing';
 import Faq from './components/Faq';
 import Footer from './components/Footer';
 
+import { ContactModal } from './components/ContactModal';
+
 const App: React.FC = () => {
+  const [isContactOpen, setIsContactOpen] = React.useState(false);
+
   // Start in dark mode by default
   useEffect(() => {
     document.documentElement.classList.add('dark');
   }, []);
 
+  const openContact = () => setIsContactOpen(true);
+
   return (
     <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-sans transition-colors duration-300">
-      <Navbar />
+      <Navbar onOpenContact={openContact} />
       <main>
-        <Hero />
+        <Hero onOpenContact={openContact} />
         <LogoBelt />
         <Services />
         <Results />
-        <Pricing />
+        <Pricing onOpenContact={openContact} />
         <Faq />
       </main>
-      <Footer />
+      <Footer onOpenContact={openContact} />
+
+      <ContactModal
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
+      />
     </div>
   );
 };
