@@ -9,7 +9,10 @@ function getClientPromise(): Promise<MongoClient> {
   }
   if (!cachedClientPromise) {
     const client = new MongoClient(uri);
-    cachedClientPromise = client.connect();
+    cachedClientPromise = client.connect().catch((err) => {
+      cachedClientPromise = undefined;
+      throw err;
+    });
   }
   return cachedClientPromise;
 }
