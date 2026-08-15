@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '../lib/supabase';
 import emailjs from '@emailjs/browser';
 
 
@@ -79,19 +78,19 @@ export const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose }) =
             });
 
             const submitTask = async () => {
-                // 1. Save to Supabase
-                const { error: supabaseError } = await supabase
-                    .from('contacts')
-                    .insert([
-                        {
-                            business_name: formData.businessName,
-                            email: formData.email,
-                            phone: formData.phone,
-                            selected_services: selectedServices,
-                        }
-                    ]);
+                // 1. Save to MongoDB
+                const contactRes = await fetch('/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        businessName: formData.businessName,
+                        email: formData.email,
+                        phone: formData.phone,
+                        selectedServices,
+                    }),
+                });
 
-                if (supabaseError) throw supabaseError;
+                if (!contactRes.ok) throw new Error('Failed to submit contact form');
 
                 // 2. Send Confirmation Email via EmailJS
                 const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID';
