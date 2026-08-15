@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getDb } from './_lib/mongodb';
+import { getDb } from './_lib/mongodb.js';
 
 interface ContactPayload {
   businessName: string;
